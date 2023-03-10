@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "businesses": {
+      ".read": true,
+      "$business_id": {
+        "ratings": {
+          "$user_id": {
+            ".write": "$user_id === auth.uid"
+          }
+        }
+      }
+    },
+    "users": {
+      "$user_id": {
+        ".read": "$user_id === auth.uid",
+        ".write": "$user_id === auth.uid"
+      }
+    }
+  }
+}
