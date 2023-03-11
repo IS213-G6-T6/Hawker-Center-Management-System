@@ -1,9 +1,9 @@
 export enum CategoryEnum {
-    services = 'Services',
-    fnb = 'F&B',
-    fashion = 'Fashion',
-    crafts = 'Crafts',
-    experiences = 'Experiences',
+    chinese = 'Chinese',
+    indian = 'Indian',
+    western = 'Western',
+    koreanjap = 'Korean/Jap',
+    halal = 'Halal',
 }
 
 export enum ModeEnum {

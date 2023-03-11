@@ -31,20 +31,20 @@ export default {
     data() {
         return {
             cards: [
-                'https://static.thehoneycombers.com/wp-content/uploads/sites/2/2020/07/haji-lane-singapore-street.png',
-                'https://upload.wikimedia.org/wikipedia/commons/6/6e/Temple_Street%2C_Singapore%2C_2014_%2803%29.JPG',
-                'https://cdn01.vulcanpost.com/wp-uploads/2018/04/DSC00628.jpg',
+                'https://www.visitsingapore.com/content/dam/desktop/global/tourism-editorials/stb/sniffing-out-local-food/2018/signpost-940x940.jpg',
+                'https://pbs.twimg.com/media/Dk9T6hUU0AAQWti?format=jpg&name=4096x4096',
+                'https://images.unsplash.com/photo-1584198414538-f469f6fad430?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1963&q=80',
             ] as string[],
             purposes: [
                 { 
                     url: 'https://01kennyfyp.files.wordpress.com/2014/10/singaporean-cuisine-1.jpg', 
                     title: 'Variety', 
-                    desc: 'Each local business has its own flair, and offers products that you will not see anywhere else!' 
+                    desc: 'Each hawker stall has its own unique flair and flavour, there is bound to be something for you here!' 
                 },
                 { 
-                    url: 'https://thehomeground.asia/wp-content/uploads/Souece-City-Developments-Limited_Featured-Image.jpg', 
-                    title: 'Sustainability', 
-                    desc: 'By shopping local, you reduce your reliance on the global supply chain, reducing your carbon emissions!' },
+                    url: 'https://www.misstamchiak.com/wp-content/uploads/2020/04/AWESOME-FOOD-DELIVERY-DEALS.png', 
+                    title: 'Promotions', 
+                    desc: 'Enjoy discounts and rebates on special times of the months!' },
                 { 
                     url: 'https://blog.transfez.com/wp-content/uploads/2022/07/21-Central-Business-District-Singapore-by-transfez.jpg', 
                     title: 'Economy', 
@@ -78,10 +78,10 @@ export default {
                     <div class="mb-4">
                         <div
                             class="text-gray-900 dark:text-white transition duration-500 ease font-bold text-xl mb-2">
-                            Support Singapore's local businesses
+                            Support Local Business!
                         </div>
                         <p class="text-gray-700 dark:text-white transition duration-500 ease text-base">
-                            Tired of the same old big chain stores, and the same old products? Why not shop #SGLocal? Find local businesses near you, offering unique and high-quality products and services that you will love!
+                            Welcome to the ABC Hawker Centre, where the sights, sounds, and flavours of Singapore come together in one vibrant and bustling space. Our hawker centre is home to over 10 food stalls, each with their own unique specialties and flavours to delight your taste buds. From traditional hawker favourites like laksa and chicken rice to contemporary fusion dishes and global cuisines, there's something for everyone at our hawker centre.
                         </p>
                     </div>
                     <div class="flex items-center justify-evenly">
@@ -109,7 +109,7 @@ export default {
                 </h1>
                 <div
                     class="text-gray-900 dark:text-white transition duration-500 ease text-sm w-full lg:text-lg pb-4">
-                    Why you should start shopping local today!
+                    Why you should head over to ABC Hawker Centre!
                 </div>
                 <div class="flex flex-wrap justify-evenly gap-10 pb-6 md:pb-0">
                     <div v-for="purpose in purposes"

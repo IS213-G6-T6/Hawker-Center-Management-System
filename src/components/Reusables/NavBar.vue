@@ -101,7 +101,7 @@ export default {
             signOut(auth)
                 .then(() => {
                     window.sessionStorage.clear()
-                    window.location.href = '/Home?loggedOut=1'
+                    window.location.href = '/?loggedOut=1'
                 })
                 .catch((error) => {
                     toast.error("Unable to log out, please try again later.", { timeout: 5000 })
@@ -168,7 +168,7 @@ export default {
     <div :class="{ dark: this.$store.getters.getDarkMode }" id="app">
         <nav class="bg-white w-full py-2 px-5 dark:bg-slate-900 transition duration-200 ease">
             <div class="container flex flex-wrap justify-between mx-auto">
-                <router-link to="/Home" class="flex">
+                <router-link to="/" class="flex">
                     <a class="flex items-center md:px-3">
                         <img
                             src="/assets/logo.png"
@@ -176,7 +176,7 @@ export default {
                             alt="BigRedDot Logo" />
                         <span
                             class="self-center text-xl font-semibold whitespace-nowrap text-gray-500 dark:text-white">
-                            BigRedDot
+                            ABC Hawker Centre
                         </span>
                     </a>
                 </router-link>
@@ -225,7 +225,7 @@ export default {
                         class="h-screen md:h-full flex items-baseline md:items-center flex-col p-4 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0">
                         <li class="w-full md:w-auto mb-1 md:mb-0">
                             <div>
-                                <router-link to="/Home">
+                                <router-link to="/">
                                     <a
                                         class="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                                         aria-current="page">

@@ -16,11 +16,11 @@ export default {
     data() {
         return {
             categories: [
-                { name: 'services', url: '/assets/services.svg' },
-                { name: 'fnb', url: '/assets/f&b.svg' },
-                { name: 'fashion', url: '/assets/fashion.svg' },
-                { name: 'crafts', url: '/assets/crafts.svg' },
-                { name: 'experiences', url: '/assets/experiences.svg' },
+                { name: 'Chinese', url: '/assets/chinese.svg' },
+                { name: 'Indian', url: '/assets/indian.svg' },
+                { name: 'Western', url: '/assets/western.svg' },
+                { name: 'Korean/Jap', url: '/assets/jap.svg' },
+                { name: 'Halal', url: '/assets/halal.svg' },
             ] as Category[],
             CategoryEnum,
             businessData: null as Business[] | null,
