@@ -166,9 +166,9 @@ export default {
                                 class="inline py-1 mr-2 px-3 text-xs border-solid border-2 border-blue-400 rounded-2xl transition duration-500 ease text-gray-700 dark:text-white">
                                 {{ this.data.category }}
                             </div>
-                            <div
-                                class="inline py-1 px-3 text-xs border-solid border-2 border-rose-300 rounded-2xl transition duration-500 ease text-gray-700 dark:text-white">
-                                {{ this.data.mode }}
+                            <div v-for=" (mode, n) in this.data.mode"
+                                class="inline mx-1 py-1 px-3 text-xs border-solid border-2 border-rose-300 rounded-2xl transition duration-500 ease text-gray-700 dark:text-white">
+                                {{ mode }}
                             </div>
                         </div>
                         <div

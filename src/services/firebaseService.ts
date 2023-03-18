@@ -11,9 +11,9 @@ export class FirebaseService {
 
     constructor() {
         this.baseUrl =
-            'https://is216-bigreddot-default-rtdb.asia-southeast1.firebasedatabase.app'
+            'https://is213-hawker-default-rtdb.asia-southeast1.firebasedatabase.app'
         this.businessUrl = this.baseUrl + '/businesses'
-        this.ratingUrl = this.baseUrl + '/ratings.json'
+        // this.ratingUrl = this.baseUrl + '/ratings.json'
     }
 
     async getAll(): Promise<void | Business[]> {
@@ -56,38 +56,39 @@ export class FirebaseService {
         }
     }
 
-    async updateRating(
-        bid: number,
-        uid: string,
-        name: string,
-        rating: number,
-        review: string,
-        datetime: number,
-        token: string
-    ): Promise<void> {
-        const updateRatingUrl =
-            this.businessUrl + '/' + bid + '/ratings/' + uid + '.json'
+    // async updateRating(
+    //     bid: number,
+    //     uid: string,
+    //     name: string,
+    //     rating: number,
+    //     review: string,
+    //     datetime: number,
+    //     token: string
+    // ): Promise<void> {
+    //     const updateRatingUrl =
+    //         this.businessUrl + '/' + bid + '/ratings/' + uid + '.json'
 
-        const tempRatingEntity = {
-            name: name,
-            ratingscore: rating,
-            reviewtext: review,
-            datetime: datetime,
-        }
+    //     const tempRatingEntity = {
+    //         name: name,
+    //         ratingscore: rating,
+    //         reviewtext: review,
+    //         datetime: datetime,
+    //     }
 
-        try {
-            let res = await axios.put(updateRatingUrl, tempRatingEntity, {
-                params: { auth: token },
-            })
-            if (res.status === 200) {
-                toast.success('Review added successfully!', { timeout: 5000 })
-            }
-            window.location.href = window.location.pathname + '?updated=1'
-        } catch (err) {
-            toast.error('Unable to add review, try again later.', {
-                timeout: 5000,
-            })
-            throw err
-        }
-    }
+    //     try {
+    //         let res = await axios.put(updateRatingUrl, tempRatingEntity, {
+    //             params: { auth: token },
+    //         })
+    //         if (res.status === 200) {
+    //             toast.success('Review added successfully!', { timeout: 5000 })
+    //         }
+    //         window.location.href = window.location.pathname + '?updated=1'
+    //     } catch (err) {
+    //         toast.error('Unable to add review, try again later.', {
+    //             timeout: 5000,
+    //         })
+    //         throw err
+    //     }
+    // }
+    
 }
