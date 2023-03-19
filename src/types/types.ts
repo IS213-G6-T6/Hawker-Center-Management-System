@@ -68,3 +68,9 @@ export interface FilterFields {
     rating: string
     mode: string
 }
+
+export interface MenuFields {
+    price: number
+    rating: string
+    mode: string
+}
