@@ -3,6 +3,7 @@ import { submit } from 'dom7'
 import { Business, DeliveryOptionsEnum, MenuFields, ModeEnum } from '../../types/types'
 import { FirebaseService } from '../../services/firebaseService'
 import { defineAsyncComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 const firebaseService = new FirebaseService()
 const lazyPictureLoad = defineAsyncComponent(
@@ -11,6 +12,10 @@ const lazyPictureLoad = defineAsyncComponent(
 
 export default {
     name: 'Filter',
+    props: {
+        data: Object as PropType<Business>,
+        business_id: String,
+    },
     data() {
         return {
             lowerLimit: 0 as number,
@@ -28,12 +33,15 @@ export default {
         }
     },
     beforeMount() {
-        this.getAllData()
+        this.getDataByID(this.business_id)
+        console.log(this.businessData)
     },
     methods: {
-        getAllData: async function (): Promise<void> {
-            this.businessData = await firebaseService.getAll()
-            this.filteredData = null
+        getDataByID: async function (business_id: String): Promise<void> {
+            console.log(business_id)
+            this.businessData = await firebaseService.getDataByID(
+                Number(business_id)
+            )
         },
         close(): void {
             this.$emit('close')
