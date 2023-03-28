@@ -30,6 +30,7 @@ export default {
             selected_rating: '' as string,
             selected_mode: [] as string[],
             businessData: null as Business[] | null,
+            curr_val: 0 as number
         }
     },
     beforeMount() {
@@ -56,24 +57,15 @@ export default {
                 console.log(this.selected_mode)
             }
         },
-        add(): void {
-            const plusButton = document.getElementById("plus-button");
-
-            plusButton.addEventListener("click", () => {
-                const curr_val = Number(document.getElementById("number-input").value)
-                console.log(curr_val)
-                document.getElementById("number-input").value = (curr_val + 1).toString();
-            });
+        add(item): void {
+            this.curr_val = Number(document.getElementById("number-input-"+item).value)
+            document.getElementById("number-input-"+item).value = (this.curr_val + 1).toString();
         },
-        minus(): void {
-            const minusButton = document.getElementById("minus-button");
-
-            minusButton.addEventListener("click", () => {
-                const curr_val = Number(document.getElementById("number-input").value)
-                if (currentValue > 0) {
-                document.getElementById("number-input").value = (curr_val - 1).toString();    
-                }           
-            });
+        minus(item): void {
+            this.curr_val = Number(document.getElementById("number-input-"+item).value)
+            if (this.curr_val > 0) {
+                document.getElementById("number-input-"+item).value = (this.curr_val - 1).toString();    
+            }  
         },
         close(): void {
             this.$emit('close')
@@ -150,101 +142,33 @@ export default {
             </div> -->
 
             <!-- menu -->
-            <div class="px-12 pt-12 grid grid-cols-4" v-for="items in selected_mode">
-                <div class="col-span-1 rounded-lg border-2 border-gray-200 px-6 pt-6">
+            <div class="px-12 pt-12 grid grid-cols-4">
+                <div class="col-span-1 rounded-lg border-2 border-gray-200 px-6 pt-6 mx-2" v-for="(items,x) in selected_mode">
                     <div class="w-full md:w-auto">
-                        <img :src="items[0]" class="max-w-full rounded-lg">
+                        <img :src="items[0]" class="object-cover w-[20rem] h-[16rem] rounded-lg">
                     </div>
-                    <div class="w-full md:w-auto font-bold pb-3">
+                    <div class="w-full md:w-auto font-bold pt-3">
                             {{ items[1] }}
                     </div>
-                    <div class="w-full md:w-auto">
+                    <div class="w-full md:w-auto p-3">
                             ${{ items[2] }}
                     </div>
 
-                    <div class="quantity buttons_added">
-	                    <input type="button" value="-" id="minus-button" class="minus" @click="add()"> 
-                        <input type="number" value="0" id="number-input" min="0" name="quantity" title="Qty" size="4" class="input-text qty text">
-                        <input type="button" value="+" id="plus-button" class="plus" @click="minus()">
+                    <div class="quantity buttons_added pb-3">
+	                    <input type="button" value="-" id="minus-button" class="minus" @click="minus(x)"> 
+                        <input type="number" value="0" :id="`number-input-${ x }`" min="0" name="quantity" title="Qty" size="4" class="input-text qty text">
+                        <input type="button" value="+" id="plus-button" class="plus" @click="add(x)">
                     </div>
                 </div>
             </div>
 
-            <!-- preferred mode -->
-            <div class="text-left px-6 md:px-12">
-                <p class="text-left font-bold pb-3">Mode</p>
-                <ul class="grid gap-6 w-full md:grid-cols-2">
-                    <li>
-                        <input
-                            type="checkbox"
-                            id="physical"
-                            class="hidden peer" />
-                        <label
-                            @click="checkMode('physical')"
-                            for="physical"
-                            class="inline-flex justify-between items-center text-gray-500 px-7 py-3 w-full bg-white rounded-lg border-2 border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-gray-700 hover:bg-gray-50">
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">
-                                    Physical
-                                </div>
-                                <div class="w-full text-sm">
-                                    Visit physical stores
-                                </div>
-                            </div>
-                        </label>
-                    </li>
-                    <li>
-                        <input
-                            type="checkbox"
-                            id="online"
-                            class="hidden peer" />
-                        <label
-                            @click="checkMode('online')"
-                            for="online"
-                            class="inline-flex justify-between items-center text-gray-500 px-7 py-3 w-full bg-white rounded-lg border-2 border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-gray-700 hover:bg-gray-50">
-                            <div class="block">
-                                <div class="w-full text-lg font-semibold">
-                                    Online
-                                </div>
-                                <div class="w-full text-sm">
-                                    Delivery Services
-                                </div>
-                            </div>
-                        </label>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- rating -->
-            <div class="my-5 md:my-10 text-center md:text-left px-6 md:px-12">
-                <p class="font-bold pb-3">Rating</p>
-                <div class="w-full flex justify-between flex-wrap gap-3">
-                    <div class="w-full md:w-auto" v-for="star in stars">
-                        <button
-                            :value="star"
-                            @click="checkRating(star)"
-                            class="flex items-center w-full md:w-auto md:min-w-[60px] hover:bg-gray-50 font-semibold focus:outline-none py-2 px-5 rounded-lg border-2 border-gray-200 cursor-pointer"
-                            :class="{
-                                'bg-transparent border-blue-500':
-                                    star === selected_rating,
-                                'bg-transparent text-gray-500 ':
-                                    star !== selected_rating,
-                            }">
-                            {{ star
-                            }}<span
-                                ><img class="ml-4" src="/assets/star.svg"
-                            /></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
             <!-- search -->
             <div class="my-10 text-center px-12">
                 <button
                     @click="submit()"
                     id="searchBtn"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded w-full">
-                    Search
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded w-96">
+                    Submit
                 </button>
             </div>
         </div>

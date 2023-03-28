@@ -286,39 +286,12 @@ export default defineComponent({
                                 {{ businessData.products }}
                             </div>
                         </div>
-                        <div class="pt-4 pb-4 flex items-center">
-                            <img
-                                :style="[
-                                    this.$store.getters.getDarkMode
-                                        ? {
-                                              filter: 'invert(98%) sepia(98%) saturate(6%) hue-rotate(127deg) brightness(102%) contrast(103%)',
-                                          }
-                                        : { filter: 'none' },
-                                ]"
-                                class="w-[35px]"
-                                src="/assets/priceIcon.svg" />
-                            <div
-                                class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold"
-                                v-if="businessData.pricerange == 3">
-                                $100 to $1000
-                            </div>
-                            <div
-                                class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold"
-                                v-if="businessData.pricerange == 2">
-                                $10 to $100
-                            </div>
-                            <div
-                                class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold"
-                                v-if="businessData.pricerange == 1">
-                                $0 to $10
-                            </div>
-                        </div>
                         <!-- Menu -->
                         <div class="border-b pb-4">
                             <button
                                 id="filterBtn"
                                 @click="showMenu"
-                                class="mr-7 md:mr-0 flex flex-col items-center h-full">
+                                class="bg-blue-700 mt-5 mr-7 md:mr-0 flex flex-col items-center h-full">
                                 Order now
                             </button>
                         </div>
