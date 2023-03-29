@@ -30,36 +30,35 @@ export default {
             selected_rating: '' as string,
             selected_mode: [] as string[],
             businessData: null as Business[] | null,
-            curr_val: 0 as number
+            curr_val: 0 as number,
+            cart: [] as string[]
         }
     },
     beforeMount() {
         this.getDataByID(this.business_id)
-        console.log(this.businessData)
     },
     methods: {
         getDataByID: async function (business_id: String): Promise<void> {
-            business_id= window.location.href.split('/').slice(-1)
-            console.log(business_id)
-            this.businessData = await firebaseService.getDataByID(
-                Number(business_id)
-            )
-            console.log(this.businessData)
-            console.log(this.businessData.menu)
-            var menu= this.businessData.menu
-            for (var item of menu) {
-                var temp_array= []
-                temp_array.push(item.image)
-                temp_array.push(item.name)
-                temp_array.push(item.price)
-                console.log(temp_array)
-                this.selected_mode.push(temp_array)
-                console.log(this.selected_mode)
+            if(this.selected_mode.length == 0){
+                business_id= window.location.href.split('/').slice(-1)
+                this.businessData = await firebaseService.getDataByID(
+                    Number(business_id)
+                )
+                var menu= this.businessData.menu
+                for (var item of menu) {
+                    var temp_array= []
+                    temp_array.push(item.image)
+                    temp_array.push(item.name)
+                    temp_array.push(item.price)
+                    this.selected_mode.push(temp_array)
+                }
             }
         },
         add(item): void {
             this.curr_val = Number(document.getElementById("number-input-"+item).value)
-            document.getElementById("number-input-"+item).value = (this.curr_val + 1).toString();
+            document.getElementById("number-input-"+item).value = (this.curr_val + 1).toString()
+            // this.cart[this.businessData.menu[item]['name']]['qty'] += 1
+            // this.cart[this.businessData.menu[item]['name']]['price'] = this.businessData.menu[item]['price']
         },
         minus(item): void {
             this.curr_val = Number(document.getElementById("number-input-"+item).value)
@@ -164,12 +163,17 @@ export default {
 
             <!-- search -->
             <div class="my-10 text-center px-12">
-                <button
-                    @click="submit()"
-                    id="searchBtn"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded w-96">
-                    Submit
-                </button>
+                <RouterLink     
+                    :to="{
+                        name: 'Payment',
+                        params: { business_id: this.businessData.id },
+                    }">
+                    <button
+                        id="searchBtn"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded w-96">
+                        Submit
+                    </button>
+                </RouterLink>
             </div>
         </div>
     </div>
