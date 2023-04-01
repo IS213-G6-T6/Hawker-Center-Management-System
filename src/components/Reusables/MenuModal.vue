@@ -31,7 +31,7 @@ export default {
             selected_mode: [] as string[],
             businessData: null as Business[] | null,
             curr_val: 0 as number,
-            cart: [] as string[]
+            cart: {} as Record<string, {qty:number; price:number; image:string}>
         }
     },
     beforeMount() {
@@ -54,17 +54,38 @@ export default {
                 }
             }
         },
-        add(item): void {
-            this.curr_val = Number(document.getElementById("number-input-"+item).value)
-            document.getElementById("number-input-"+item).value = (this.curr_val + 1).toString()
-            // this.cart[this.businessData.menu[item]['name']]['qty'] += 1
-            // this.cart[this.businessData.menu[item]['name']]['price'] = this.businessData.menu[item]['price']
+        add(item: number): void {
+            if (item >= 0 && item < this.businessData.menu.length){
+                this.curr_val = Number(document.getElementById("number-input-"+item).value)
+                document.getElementById("number-input-"+item).value = (this.curr_val + 1).toString()
+                if (this.cart.hasOwnProperty(this.businessData.menu[item]['name'])) {
+                    this.cart[this.businessData.menu[item]['name']].qty++;
+                } 
+                else {
+                    this.cart[this.businessData.menu[item]['name']] = {
+                        qty: 1,
+                        price: this.businessData.menu[item]['price'],
+                        image: this.businessData.menu[item]['image'],
+                    };
+                }
+                console.log(this.cart)
+                console.log(this.businessData)
+            }
         },
         minus(item): void {
-            this.curr_val = Number(document.getElementById("number-input-"+item).value)
-            if (this.curr_val > 0) {
-                document.getElementById("number-input-"+item).value = (this.curr_val - 1).toString();    
-            }  
+            if (item >= 0 && item < this.businessData.menu.length){
+                this.curr_val = Number(document.getElementById("number-input-"+item).value)
+                if (this.curr_val > 0) {
+                    document.getElementById("number-input-"+item).value = (this.curr_val - 1).toString();    
+                }  
+                if (this.cart.hasOwnProperty(this.businessData.menu[item]['name'])) {
+                    this.cart[this.businessData.menu[item]['name']].qty--;
+                    if (this.cart[this.businessData.menu[item]['name']].qty === 0) {
+                        delete this.cart[this.businessData.menu[item]['name']];
+                    }
+                }
+                console.log(this.cart)
+            }
         },
         close(): void {
             this.$emit('close')
@@ -111,8 +132,13 @@ export default {
                 rating: this.selected_rating
             }
 
+            // const cartString = encodeURIComponent(JSON.stringify(this.cart))
+            // const paymentUrl = `http://127.0.0.1:5173/Payment/${this.business_id}?cart=${cartString}`
+            // window.location.href = paymentUrl
+
             this.$emit('menu-push', MenuFields)
             this.close()
+            console.log('encodeURI',encodeURIComponent(JSON.stringify(this.cart)))
         },
     },
 }
@@ -166,9 +192,11 @@ export default {
                 <RouterLink     
                     :to="{
                         name: 'Payment',
-                        params: { business_id: this.businessData.id },
+                        params: { business_id: this.businessData.id},
+                        query: { cart: encodeURIComponent(JSON.stringify(this.cart)) }
                     }">
                     <button
+                        @click="submit()"
                         id="searchBtn"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded w-96">
                         Submit
