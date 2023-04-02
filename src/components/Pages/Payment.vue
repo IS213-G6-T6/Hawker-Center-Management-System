@@ -79,6 +79,80 @@ export default defineComponent({
         // if (updated === '1') {
         //     toast.success('Review added successfully.', { timeout: 5000 })
         // }
+
+        // window.onload = function() {
+        //     let script = document.createElement('script')
+        //     script.src = 'https://unpkg.com/axios/dist/axios.min.js'
+        //     document.body.appendChild(script)
+        //     script = document.createElement('script')
+        //     script.src = 'https://js.stripe.com/v2/'
+        //     document.body.appendChild(script)
+        // }
+
+        // let recaptchaScript = document.createElement('script')
+        // recaptchaScript.setAttribute('src', 'https://unpkg.com/axios/dist/axios.min.js')
+        // document.body.appendChild(recaptchaScript)
+        // recaptchaScript = document.createElement('script')
+        // recaptchaScript.setAttribute('src', 'https://js.stripe.com/v2/')
+        // document.body.appendChild(recaptchaScript)
+
+        window.onload = function() {
+            const axios = require('axios')
+            // import axios from 'axios'
+            axios.get('https://unpkg.com/axios/dist/axios.min.js')
+            axios.get('https://js.stripe.com/v2/')
+
+            const form = document.getElementById('product-form');
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+            //   const name = document.getElementById('name').value;
+            //   const price = document.getElementById('price').value;
+            //   const quantity = document.getElementById('quantity').value;
+
+            //   const data = {
+            //     name: name,
+            //     price: price * 100,
+            //     quantity: quantity,
+            //     orderID: "2"
+            //   };
+
+            // const data = {
+            //     "customerID": "10",
+            //     "customer_name": "q",
+            //     "phone_no": "9420000",
+            //     "total_price": "100.00",
+            //     "status": "testing",
+            //     "order_items": [
+            //     {
+            //         "item_name": "rice",
+            //         "itemID": 9,
+            //         "quantity": 100
+            //     },
+            //     {
+            //         "item_name": "fish",
+            //         "itemID": 10,
+            //         "quantity": 200
+            //     }
+            //     ]
+            // };
+            const data = {
+                "orderID": "10",
+                "name": "10",
+                "price": "100.00",
+            };
+
+            axios.post('http://localhost:5001/payment', data)
+                .then(response => {
+                    console.log(response.data)
+                    window.open(response.data.url)
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            });
+        }
     },
     computed: {
         isLoggedIn() {
@@ -156,54 +230,6 @@ export default defineComponent({
     components: { NavBar, Swiper, SwiperSlide, ReviewCard, MenuModal },
 })
 
-src="https://unpkg.com/axios/dist/axios.min.js"
-src="https://js.stripe.com/v2/"
-
-const form = document.getElementById('product-form');
-
-form.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-//   const name = document.getElementById('name').value;
-//   const price = document.getElementById('price').value;
-//   const quantity = document.getElementById('quantity').value;
-
-//   const data = {
-//     name: name,
-//     price: price * 100,
-//     quantity: quantity,
-//     orderID: "2"
-//   };
-
-const data = {
-    "customerID": "10",
-    "customer_name": "q",
-    "phone_no": "9420000",
-    "total_price": "100.00",
-    "status": "testing",
-    "order_items": [
-    {
-        "item_name": "rice",
-        "itemID": 9,
-        "quantity": 100
-    },
-    {
-        "item_name": "fish",
-        "itemID": 10,
-        "quantity": 200
-    }
-    ]
-};
-
-axios.post('http://localhost:5100/placeOrder', data)
-    .then(response => {
-    console.log(response.data)
-    window.open(response.data.url)
-    })
-    .catch(error => {
-    //console.error(error);
-    });
-});
 
 </script>
 
