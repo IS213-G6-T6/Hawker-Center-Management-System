@@ -26,9 +26,19 @@ export default {
             profile: false as boolean,
             valid_email2: true as boolean,
             userBookmarks: [] as number[],
+            isCustomer: true as boolean
         }
     },
     mounted() {
+        const link = window.location.href.split('/')
+        const item = link[link.length-1]
+        if(item =='Hawker'){
+            this.isCustomer = false
+        }
+        else{
+            this.isCustomer = true
+        }
+        console.log(this.isCustomer)
         if (!this.$store.getters.getUser) {
             let ui = firebaseui.auth.AuthUI.getInstance()
             if (!ui) {
@@ -223,7 +233,7 @@ export default {
                     id="navbar-default">
                     <ul
                         class="h-screen md:h-full flex items-baseline md:items-center flex-col p-4 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0">
-                        <li class="w-full md:w-auto mb-1 md:mb-0">
+                        <li v-if="isCustomer" class="w-full md:w-auto mb-1 md:mb-0">
                             <div>
                                 <router-link to="/">
                                     <a
@@ -268,6 +278,28 @@ export default {
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded w-full md:w-auto">
                                 Sign Up / Log In
                             </button>
+                        </li>
+                        <li
+                            v-show="isCustomer"
+                            class="w-full md:w-auto mb-1 mt-3 md:mt-0 md:mb-0">
+                            <router-link to="/Hawker">
+                                <button
+                                    @click="showModal(), toggle()"
+                                    class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-5 rounded w-full md:w-auto">
+                                    Switch to Hawker
+                                </button>
+                            </router-link>
+                        </li>
+                        <li
+                            v-show="!isCustomer"
+                            class="w-full md:w-auto mb-1 mt-3 md:mt-0 md:mb-0">
+                            <router-link to="/">
+                                <button
+                                    @click="showModal(), toggle()"
+                                    class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-5 rounded w-full md:w-auto">
+                                    Switch to Customer
+                                </button>
+                            </router-link>
                         </li>
                         <li
                             v-if="$store.state.user"

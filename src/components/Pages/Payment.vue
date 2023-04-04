@@ -12,6 +12,8 @@ import 'swiper/css/pagination'
 import { useToast } from 'vue-toastification'
 import firebase from 'firebase/compat/app'
 import MenuModal from '../Reusables/MenuModal.vue'
+import axios from 'axios'
+
 
 SwiperCore.use([Navigation, Pagination, A11y])
 const firebaseService = new FirebaseService()
@@ -61,9 +63,13 @@ export default defineComponent({
         this.getCart()
             .then((cart)=>{
                 this.cart = cart
-                if(this.cart && Object.keys(this.cart).length != 0){
+                // console.log(this.cart)
+                if(this.isCartEmpty && this.cart && Object.keys(this.cart).length != 0){
                     this.isCartEmpty = false
+                    // console.log(this.isCartEmpty)
                     for (let item in this.cart){
+                        // console.log(this.cart[item]['qty'])
+                        // console.log(this.cart[item]['price'])
                         this.totalAmount += this.cart[item]['qty'] * this.cart[item]['price']
                     }
                 }
@@ -96,17 +102,16 @@ export default defineComponent({
         // recaptchaScript.setAttribute('src', 'https://js.stripe.com/v2/')
         // document.body.appendChild(recaptchaScript)
 
-        window.onload = function() {
-            const axios = require('axios')
-            // import axios from 'axios'
+        // window.onload = function() {
+            // const axios = require('axios')
             axios.get('https://unpkg.com/axios/dist/axios.min.js')
             axios.get('https://js.stripe.com/v2/')
 
-            const form = document.getElementById('product-form');
-
-            form.addEventListener('submit', (event) => {
+            const form = document.getElementById('product-form').querySelector('button[type="submit"]');
+            // console.log(form)
+            form.addEventListener('click', (event) => {
                 event.preventDefault();
-
+                console.log('Click event listener activated')
             //   const name = document.getElementById('name').value;
             //   const price = document.getElementById('price').value;
             //   const quantity = document.getElementById('quantity').value;
@@ -118,41 +123,47 @@ export default defineComponent({
             //     orderID: "2"
             //   };
 
-            // const data = {
-            //     "customerID": "10",
-            //     "customer_name": "q",
-            //     "phone_no": "9420000",
-            //     "total_price": "100.00",
-            //     "status": "testing",
-            //     "order_items": [
-            //     {
-            //         "item_name": "rice",
-            //         "itemID": 9,
-            //         "quantity": 100
-            //     },
-            //     {
-            //         "item_name": "fish",
-            //         "itemID": 10,
-            //         "quantity": 200
-            //     }
-            //     ]
-            // };
             const data = {
-                "orderID": "10",
-                "name": "10",
-                "price": "100.00",
+                "customerID": "10",
+                "customer_name": "q",
+                "hawkerID":"1",
+                "phone_no": "9420000",
+                "total_price": "100.00",
+                "status": "testing",
+                "order_items": [
+                {
+                    "item_name": "rice",
+                    "itemID": 9,
+                    "quantity": 100
+                },
+                {
+                    "item_name": "fish",
+                    "itemID": 10,
+                    "quantity": 200
+                }
+                ]
             };
 
-            axios.post('http://localhost:5001/payment', data)
+            // const data = {
+            //     "orderID": "10",
+            //     "name": "10",
+            //     "price": 100.00,
+            //     "quantity": 2
+            // };
+
+            axios.post('http://localhost:5100/placeOrder', data)
                 .then(response => {
-                    console.log(response.data)
+                    // console.log("axios post success")
+                    // console.log("Response data",response.data)
+                    // console.log("Data",data)
                     window.open(response.data.url)
+                    // window.location.href = response.data.url;
                 })
                 .catch(error => {
                     console.error(error);
                 });
             });
-        }
+        // }
     },
     computed: {
         isLoggedIn() {
@@ -237,7 +248,7 @@ export default defineComponent({
     <div :class="{ dark: this.$store.getters.getDarkMode }">
         <NavBar></NavBar>
         <div class="bg-white dark:bg-slate-900 h-screen text-gray-500">
-            <div v-if="!isCartEmpty" class="flex flex-col md:flex-row pb-10 md:gap-12 px-5 md:px-10 lg:px-14 bg-white dark:bg-slate-900">
+            <div v-show="!isCartEmpty" class="flex flex-col md:flex-row pb-10 md:gap-12 px-5 md:px-10 lg:px-14 bg-white dark:bg-slate-900">
                 
                 <!-- display cart -->
                 <div class="w-full md:w-3/4 flex flex-col items-start">
@@ -281,7 +292,7 @@ export default defineComponent({
 
             </div>
 
-            <div v-else>
+            <div v-show="isCartEmpty">
                 Cart is empty!
             </div>
         </div>

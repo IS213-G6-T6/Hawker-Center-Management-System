@@ -5,6 +5,7 @@ import About from './components/Pages/About.vue'
 import BusinessDetail from './components/Reusables/BusinessDetail.vue'
 import Profile from './components/Pages/Profile.vue'
 import Payment from './components/Pages/Payment.vue'
+import HomeHawker from './components/Pages/HomeHawker.vue';
 
 const routes = [
   {
@@ -34,6 +35,10 @@ const routes = [
     name: 'Payment',
     component: Payment,
     props: true
+  },
+  {
+    path: '/Hawker',
+    component: HomeHawker,
   }
 ]
 
