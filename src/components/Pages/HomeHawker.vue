@@ -4,6 +4,7 @@ import NavBar from '../Reusables/NavBar.vue'
 import { Business, CategoryEnum } from '../../types/types'
 import { FirebaseService } from '../../services/firebaseService'
 import { Category } from '../../types/types'
+import axios from 'axios'
 
 const firebaseService = new FirebaseService()
 const lazyPictureLoad = defineAsyncComponent(
@@ -24,6 +25,7 @@ export default {
             filterVisible: false as boolean,
             isCompletedVisible: false as boolean,
             isUpcomingVisible: true as boolean,
+            orders: null
         }
     },
     beforeMount() {
@@ -32,6 +34,9 @@ export default {
         } else {
             this.getAllData()
         }
+        axios.get('https://unpkg.com/axios/dist/axios.min.js')
+        axios.get('https://js.stripe.com/v2/')
+        this.fetchOrders()
     },
     methods: {
         getAllData: async function (): Promise<void> {
@@ -46,6 +51,45 @@ export default {
             this.isUpcomingVisible = false
             this.isCompletedVisible = true
         },
+        fetchOrders: async function(): Promise<void> {
+            try {
+                const response = await axios.get('http://localhost:5000/order/hawker/0')
+                this.orders = response.data.data.orders
+                console.log(this.orders)
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        rejectOrder: async function(): Promise<void> {
+            try {
+                const data = {
+                    "orderID": "7"                
+                }
+                console.log(data)
+                await axios.post('http://localhost:5101/reject_order',data)
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        showOrder: function (item) {
+            if(item['status'] == 'open'){
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        // rejectOrder: async function(orderid): Promise<void> {
+        //     try {
+        //         const data = {
+        //             "orderID": String(orderid)
+        //         }
+        //         console.log(data)
+        //         await axios.post('http://localhost:5101/reject_order',data)
+        //     } catch (error) {
+        //         console.error(error)
+        //     }
+        // },
     },
     components: { NavBar, lazyPictureLoad },
 }
@@ -92,7 +136,7 @@ export default {
                 </div>
             </div>
             <div
-                class="bg-white px-8 md:px-20 py-8 w-full grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 dark:bg-slate-900 text-black">
+                class="bg-white px-8 md:px-20 py-8 w-full grid grid-cols-1 gap-6 dark:bg-slate-900 text-black">
                 <!-- <div v-if="filteredData" v-for="business of filteredData">
                     <lazyPictureLoad :data="business"></lazyPictureLoad>
                 </div>
@@ -101,9 +145,73 @@ export default {
                 </div> -->
                 <div v-show="isUpcomingVisible">
                     <div>
-                        <p>Test 1</p>
-                        <p>Test 2</p>
-                        <p>Test 3</p>
+                        <table class="table-fixed mx-auto">
+                            <thead>
+                                <tr>
+                                    <th class="p-4">Customer name</th>
+                                    <th class="p-4">OrderID</th>
+                                    <th class="p-4">Item information (Qty)</th>
+                                    <th class="p-4">Phone number</th>
+                                    <th class="p-4">Total price</th>
+                                    <th class="p-4">Confirm/Reject</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in orders" v-show="showOrder(item)">
+                                    <td>{{ item['customer_name'] }}</td>
+                                    <td>{{ item['orderID'] }}</td>
+                                    <td>
+                                        <ol>
+                                            <li v-for="food in item['order_items']">
+                                                {{ food['item_name'] }} ({{ food['quantity'] }})
+                                            </li>
+                                        </ol>
+                                    </td>
+                                    <td>{{ item['phone_no'] }}</td>
+                                    <td>${{ item['total_price'] }}</td>
+                                    <td>
+                                        <div class="p-3">
+                                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-5 rounded">Confirm</button>
+                                            <button @click=" rejectOrder()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-5 rounded">Reject</button>
+                                            <!-- <button @click=" rejectOrder(item['orderID'])" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-5 rounded">Reject</button> -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- <div v-for="item in orders">
+                                    <tr v-if="item['status'] == 'open'">
+                                        <td>{{ item['customer_name'] }}</td>
+                                        <td>{{ item['orderID'] }}</td>
+                                        <td>
+                                            <ol>
+                                                <li v-for="food in item['order_items']">
+                                                    {{ food['item_name'] }} ({{ food['quantity'] }})
+                                                </li>
+                                            </ol>
+                                        </td>
+                                        <td>{{ item['phone_no'] }}</td>
+                                        <td>${{ item['total_price'] }}</td>
+                                        <td>
+                                            <div class="p-3">
+                                                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-5 rounded">Confirm</button>
+                                                <button @click=" rejectOrder()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-5 rounded">Reject</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </div> -->
+                            </tbody>
+                        </table>
+                        <!-- <div v-for="item in orders">
+                            <div>Customer name: {{ item['customer_name'] }}</div>
+                            <div>OrderID: {{ item['orderID'] }}</div>
+                            <div v-for="food in item['order_items']">
+                                    <div>ItemID: {{ food['itemID'] }}</div>
+                                    <div>Item name: {{ food['item_name'] }}</div>
+                                    <div>Quantity: {{ food['quantity'] }}</div>
+                            </div>
+                            <div>Phone number: {{ item['phone_no'] }}</div>
+                            <div>Total price: ${{ item['total_price'] }}</div>
+                            <br>
+                        </div> -->
                     </div>
                 </div>
                 <div v-show="isCompletedVisible">
@@ -165,5 +273,9 @@ export default {
 #filterBtn:focus {
     border-color: transparent;
     outline: none;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
 }
 </style>

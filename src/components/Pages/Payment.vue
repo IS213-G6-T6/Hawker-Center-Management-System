@@ -124,24 +124,24 @@ export default defineComponent({
             //   };
 
             const data = {
-                "customerID": "10",
+                "customerID": "11",
                 "customer_name": "q",
                 "hawkerID":"1",
-                "phone_no": "9420000",
-                "total_price": "100.00",
-                "status": "testing",
                 "order_items": [
-                {
-                    "item_name": "rice",
-                    "itemID": 9,
-                    "quantity": 100
-                },
-                {
-                    "item_name": "fish",
-                    "itemID": 10,
-                    "quantity": 200
-                }
-                ]
+                    {
+                        "item_name": "rice",
+                        "itemID": 9,
+                        "quantity": 100
+                    },
+                    {
+                        "item_name": "fish",
+                        "itemID": 10,
+                        "quantity": 200
+                    }
+                ],
+                "phone_no": "9420000",
+                "status": "open",
+                "total_price": "100.00",
             };
 
             // const data = {

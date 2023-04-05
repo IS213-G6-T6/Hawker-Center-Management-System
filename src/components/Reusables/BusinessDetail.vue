@@ -12,6 +12,7 @@ import 'swiper/css/pagination'
 import { useToast } from 'vue-toastification'
 import firebase from 'firebase/compat/app'
 import MenuModal from './MenuModal.vue'
+import axios from 'axios'
 
 SwiperCore.use([Navigation, Pagination, A11y])
 const firebaseService = new FirebaseService()
@@ -51,10 +52,15 @@ export default defineComponent({
             error: false,
             menuData: null as Business[] | null,
             menuVisible: false as boolean,
+            facebookReview: null
         }
     },
     beforeMount() {
         this.getDataByID(this.business_id)
+        axios.get('https://unpkg.com/axios/dist/axios.min.js')
+        axios.get('https://js.stripe.com/v2/')
+        this.fetchFacebookReview()
+        console.log(this.businessData)
     },
     mounted() {
         const { search } = window.location
@@ -73,6 +79,29 @@ export default defineComponent({
             this.businessData = await firebaseService.getDataByID(
                 Number(business_id)
             )
+            if (Object.keys(this.businessData.ratings).length > 0) {
+                this.getRating()
+                this.findSum()
+            }
+        },
+        fetchFacebookReview: async function(): Promise<void> {
+            try {
+                const response = await axios.get('http://localhost:5005/review/117623211277081')
+                this.facebookReview = response.data.data
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        convertDate(input): string{
+            const dateObj = new Date(input)
+            const month = dateObj.getMonth() + 1
+            const day = dateObj.getDate()
+            const year = dateObj.getFullYear()
+            const hours = dateObj.getHours()
+            const minutes = dateObj.getMinutes()
+            const seconds = dateObj.getSeconds()
+            const formattedDate = `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`
+            return formattedDate
         },
         findPercentage(input): string {
             var percent = (input / this.rating_sum) * 100
@@ -351,8 +380,35 @@ export default defineComponent({
                             </div>
                         </div>
                         <!-- Reviews -->
-                        <div class="flex text-left flex-col pt-4 pb-4">
-                            <div v-if="businessData.ratings !== undefined">
+                        <div class="flex text-left flex-col pt-4 pb-4 text-black">
+                            <div v-if="facebookReview !== null">
+                                <h1
+                                    class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
+                                    Reviews from Facebook ({{
+                                        Object.keys(facebookReview)
+                                            .length
+                                    }})
+                                </h1>
+                                <div v-for="idx in facebookReview" class="w-full p-5 mb-5 border rounded-2xl">
+                                    <div class="flex items-center">
+                                        <!-- <div class="flex items-center">
+                                            <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ idx['recommendation_type'] }}</div>
+                                        </div> -->
+                                        <img class="w-10 h-10 pr-3" src="/assets/profileIcon.svg"/>
+                                        <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ idx['review_text'] }}</div>
+                                    </div>
+                                    <div class="flex items-center">
+                                            <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ convertDate(idx['created_time']) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <h1
+                                    class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
+                                    No Reviews (yet)
+                                </h1>
+                            </div>
+                            <!-- <div v-if="businessData.ratings !== undefined">
                                 <h1
                                     class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
                                     Reviews ({{
@@ -368,7 +424,7 @@ export default defineComponent({
                                     class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
                                     No Reviews (yet)
                                 </h1>
-                            </div>
+                            </div> -->
 
                             <div class="relative overflow-hidden mt-5">
                                 <div
