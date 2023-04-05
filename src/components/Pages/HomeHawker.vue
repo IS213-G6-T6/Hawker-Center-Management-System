@@ -53,7 +53,7 @@ export default {
         },
         fetchOrders: async function(): Promise<void> {
             try {
-                const response = await axios.get('http://localhost:5000/order/hawker/0')
+                const response = await axios.get('http://localhost:8000/getorder/hawker/0')
                 this.orders = response.data.data.orders
                 console.log(this.orders)
             } catch (error) {
@@ -63,16 +63,16 @@ export default {
         rejectOrder: async function(): Promise<void> {
             try {
                 const data = {
-                    "orderID": "7"                
+                    "orderID": "1"                
                 }
                 console.log(data)
-                await axios.post('http://localhost:5101/reject_order',data)
+                await axios.post('http://localhost:8000/reject_order',data)
             } catch (error) {
                 console.error(error)
             }
         },
         showOrderForUpcoming: function (item) {
-            if(item['status'] == 'open'){
+            if(item['status'] == 'open' || item['status'] == 'payment success'){
                 return true
             }
             else {
@@ -80,7 +80,7 @@ export default {
             }
         },
         showOrderForCompleted: function (item) {
-            if(item['status'] == 'open'){
+            if(item['status'] == 'open' || item['status'] == 'payment success'){
                 return false
             }
             else {
@@ -161,7 +161,7 @@ export default {
                                     <th class="p-4">Item information (Qty)</th>
                                     <th class="p-4">Phone number</th>
                                     <th class="p-4">Total price</th>
-                                    <th class="p-4">Confirm/Reject</th>
+                                    <th class="p-4">Reject</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -179,7 +179,7 @@ export default {
                                     <td>${{ item['total_price'] }}</td>
                                     <td>
                                         <div class="p-3">
-                                            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-5 rounded">Confirm</button>
+                                            <!-- <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-5 rounded">Confirm</button> -->
                                             <button @click=" rejectOrder()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-5 rounded">Reject</button>
                                             <!-- <button @click=" rejectOrder(item['orderID'])" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-5 rounded">Reject</button> -->
                                         </div>
