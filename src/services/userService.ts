@@ -10,7 +10,7 @@ export class UserService {
 
     constructor() {
         this.baseUrl =
-            'https://is216-bigreddot-default-rtdb.asia-southeast1.firebasedatabase.app/users'
+            'https://is213-hawker-default-rtdb.asia-southeast1.firebasedatabase.app/users'
     }
 
     async createUser(user: MultiFactorInfo, token: string): Promise<void> {

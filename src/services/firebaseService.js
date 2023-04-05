@@ -13,9 +13,9 @@ const toast = useToast();
 export class FirebaseService {
     constructor() {
         this.baseUrl =
-            'https://is216-bigreddot-default-rtdb.asia-southeast1.firebasedatabase.app';
+            'https://is213-hawker-default-rtdb.asia-southeast1.firebasedatabase.app';
         this.businessUrl = this.baseUrl + '/businesses';
-        this.ratingUrl = this.baseUrl + '/ratings.json';
+        // this.ratingUrl = this.baseUrl + '/ratings.json';
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -58,30 +58,30 @@ export class FirebaseService {
             }
         });
     }
-    updateRating(bid, uid, name, rating, review, datetime, token) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const updateRatingUrl = this.businessUrl + '/' + bid + '/ratings/' + uid + '.json';
-            const tempRatingEntity = {
-                name: name,
-                ratingscore: rating,
-                reviewtext: review,
-                datetime: datetime,
-            };
-            try {
-                let res = yield axios.put(updateRatingUrl, tempRatingEntity, {
-                    params: { auth: token },
-                });
-                if (res.status === 200) {
-                    toast.success('Review added successfully!', { timeout: 5000 });
-                }
-                window.location.href = window.location.pathname + '?updated=1';
-            }
-            catch (err) {
-                toast.error('Unable to add review, try again later.', {
-                    timeout: 5000,
-                });
-                throw err;
-            }
-        });
-    }
+    // updateRating(bid, uid, name, rating, review, datetime, token) {
+    //     return __awaiter(this, void 0, void 0, function* () {
+    //         const updateRatingUrl = this.businessUrl + '/' + bid + '/ratings/' + uid + '.json';
+    //         const tempRatingEntity = {
+    //             name: name,
+    //             ratingscore: rating,
+    //             reviewtext: review,
+    //             datetime: datetime,
+    //         };
+    //         try {
+    //             let res = yield axios.put(updateRatingUrl, tempRatingEntity, {
+    //                 params: { auth: token },
+    //             });
+    //             if (res.status === 200) {
+    //                 toast.success('Review added successfully!', { timeout: 5000 });
+    //             }
+    //             window.location.href = window.location.pathname + '?updated=1';
+    //         }
+    //         catch (err) {
+    //             toast.error('Unable to add review, try again later.', {
+    //                 timeout: 5000,
+    //             });
+    //             throw err;
+    //         }
+    //     });
+    // }
 }

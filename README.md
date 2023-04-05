@@ -16,7 +16,7 @@
 
 ## Getting Started
 
-Run the following command to setup and run a local copy of the project.
+Run the following command to setup and run a local copy of the project. Note that you require node.js installed from the internet.
 
 ### Recommended IDE Setup
 

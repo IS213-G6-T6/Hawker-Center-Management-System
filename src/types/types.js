@@ -1,17 +1,19 @@
 export var CategoryEnum;
 (function (CategoryEnum) {
-    CategoryEnum["services"] = "Services";
-    CategoryEnum["fnb"] = "F&B";
-    CategoryEnum["fashion"] = "Fashion";
-    CategoryEnum["crafts"] = "Crafts";
-    CategoryEnum["experiences"] = "Experiences";
+    CategoryEnum["Chinese"] = "Chinese";
+    CategoryEnum["Indian"] = "Indian";
+    CategoryEnum["Western"] = "Western";
+    CategoryEnum["Korean/Jap"] = "Korean/Jap";
+    CategoryEnum["Halal"] = "Halal";
 })(CategoryEnum || (CategoryEnum = {}));
+
 export var ModeEnum;
 (function (ModeEnum) {
     ModeEnum["physical"] = "Physical";
     ModeEnum["online"] = "Online Order";
     ModeEnum["both"] = "Physical, Online Order";
 })(ModeEnum || (ModeEnum = {}));
+
 export var DeliveryOptionsEnum;
 (function (DeliveryOptionsEnum) {
     DeliveryOptionsEnum["selfpickup"] = "Self pick-up";

@@ -117,7 +117,7 @@ export default {
                                 class="w-6 h-6 mb-2"
                                 src="/assets/all.svg" />
                             <span class="text-xs text-gray-700 md:text-sm">
-                                all
+                                All
                             </span>
                         </button>
                     </div>

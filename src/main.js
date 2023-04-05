@@ -5,18 +5,23 @@ import router from './router';
 import store from './store';
 import firebase from 'firebase/compat/app';
 import { getAuth } from 'firebase/auth';
+
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+
 const firebaseConfig = {
-    apiKey: 'AIzaSyAipvvlbfDtRMXnN_UDeHl67l-XbgWc_CU',
-    authDomain: 'is216-bigreddot.firebaseapp.com',
-    databaseURL: 'https://is216-bigreddot-default-rtdb.asia-southeast1.firebasedatabase.app',
-    projectId: 'is216-bigreddot',
-    storageBucket: 'is216-bigreddot.appspot.com',
-    messagingSenderId: '627775349080',
-    appId: '1:627775349080:web:b4e38d720ec5ded855c52d',
-    measurementId: 'G-ZJ0T3NYPCM',
+    apiKey: 'AIzaSyCHGmYKenFigHv9UhK_zxq_yc4tK7y5DsE',
+    authDomain: "is213-hawker.firebaseapp.com",    
+    databaseURL:
+        'https://is213-hawker-default-rtdb.asia-southeast1.firebasedatabase.app',
+        projectId: "is213-hawker",
+        storageBucket: "is213-hawker.appspot.com",
+        messagingSenderId: "992772700587",
+        appId: "1:992772700587:web:c6b965b962bc0f288afaee",
+        measurementId: "G-FZDR6RG56S"
 };
+
 const app = firebase.initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
 createApp(App).use(router).use(store).use(Toast).mount('#app');

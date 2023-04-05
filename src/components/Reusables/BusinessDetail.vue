@@ -2,7 +2,7 @@
 import NavBar from './NavBar.vue'
 import ReviewCard from './ReviewCard.vue'
 import { defineComponent, PropType } from 'vue'
-import { Business } from '../../types/types'
+import { Business, MenuFields } from '../../types/types'
 import { FirebaseService } from '../../services/firebaseService'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import SwiperCore, { Navigation, Pagination, A11y } from 'swiper'
@@ -11,6 +11,8 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import { useToast } from 'vue-toastification'
 import firebase from 'firebase/compat/app'
+import MenuModal from './MenuModal.vue'
+import axios from 'axios'
 
 SwiperCore.use([Navigation, Pagination, A11y])
 const firebaseService = new FirebaseService()
@@ -48,10 +50,17 @@ export default defineComponent({
             rating_obj: { 4: 0, 3: 0, 2: 0, 1: 0, 0: 0 },
             rating_sum: 0,
             error: false,
+            menuData: null as Business[] | null,
+            menuVisible: false as boolean,
+            facebookReview: null
         }
     },
     beforeMount() {
         this.getDataByID(this.business_id)
+        axios.get('https://unpkg.com/axios/dist/axios.min.js')
+        axios.get('https://js.stripe.com/v2/')
+        this.fetchFacebookReview()
+        console.log(this.businessData)
     },
     mounted() {
         const { search } = window.location
@@ -70,11 +79,29 @@ export default defineComponent({
             this.businessData = await firebaseService.getDataByID(
                 Number(business_id)
             )
-
             if (Object.keys(this.businessData.ratings).length > 0) {
                 this.getRating()
                 this.findSum()
             }
+        },
+        fetchFacebookReview: async function(): Promise<void> {
+            try {
+                const response = await axios.get('http://localhost:5005/review/117623211277081')
+                this.facebookReview = response.data.data
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        convertDate(input): string{
+            const dateObj = new Date(input)
+            const month = dateObj.getMonth() + 1
+            const day = dateObj.getDate()
+            const year = dateObj.getFullYear()
+            const hours = dateObj.getHours()
+            const minutes = dateObj.getMinutes()
+            const seconds = dateObj.getSeconds()
+            const formattedDate = `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`
+            return formattedDate
         },
         findPercentage(input): string {
             var percent = (input / this.rating_sum) * 100
@@ -145,8 +172,53 @@ export default defineComponent({
                     })
             }
         },
+        showMenu(): void {
+            this.menuVisible = true
+        },
+        closeMenu(): void {
+            this.menuVisible = false
+        },
+        menuData(menuFields: MenuFields): void {
+            // filter by mode
+            this.menuData = this.businessData
+            if (menuFields.mode !== '') {
+                this.menuData = this.menuData.filter(
+                    (business: Business) => {
+                        return business.mode == menuFields.mode
+                    }
+                )
+            }
+
+            // filter by price
+            if (menuFields.price !== 0) {
+                this.menuData = this.menuData.filter(
+                    (business: Business) => {
+                        return business.pricerange == menuFields.price
+                    }
+                )
+            }
+
+            // filter by rating
+            if (menuFields.rating !== '') {
+                this.menuData = this.menuData.filter(
+                    (business: Business) => {
+                        if (business.ratings) {
+                            let sum = 0
+                            // get the average ratings
+                            for (const index in business.ratings) {
+                                sum += business.ratings[index].ratingscore
+                            }
+                            const avg =
+                                sum / Object.keys(business.ratings).length
+
+                            return avg >= Number(menuFields.rating)
+                        }
+                    }
+                )
+            }
+        },
     },
-    components: { NavBar, Swiper, SwiperSlide, ReviewCard },
+    components: { NavBar, Swiper, SwiperSlide, ReviewCard, MenuModal },
 })
 </script>
 
@@ -160,13 +232,13 @@ export default defineComponent({
                         <div>
                             <img
                                 class="rounded-xl object-cover w-full max-h-[26rem]"
-                                :src="businessData.images[4]" />
+                                :src="businessData.images[0]" />
                         </div>
                         <div class="flex flex-col justify-between">
                             <div
                                 v-bind:style="{
                                     backgroundImage:
-                                        'url(' + businessData.images[3] + ')',
+                                        'url(' + businessData.images[1] + ')',
                                 }"
                                 class="h-full rounded-xl bg-cover bg-center"></div>
                             <div
@@ -217,9 +289,9 @@ export default defineComponent({
                                 ]"
                                 class="w-[35px]"
                                 src="/assets/categoryIcon.svg" />
-                            <div
+                            <div v-for="value in businessData.mode"
                                 class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold">
-                                {{ businessData.mode }}
+                                {{ value }}
                             </div>
                         </div>
                         <div class="pt-4 flex items-center">
@@ -238,33 +310,19 @@ export default defineComponent({
                                 {{ businessData.products }}
                             </div>
                         </div>
-                        <div class="pt-4 pb-4 border-b flex items-center">
-                            <img
-                                :style="[
-                                    this.$store.getters.getDarkMode
-                                        ? {
-                                              filter: 'invert(98%) sepia(98%) saturate(6%) hue-rotate(127deg) brightness(102%) contrast(103%)',
-                                          }
-                                        : { filter: 'none' },
-                                ]"
-                                class="w-[35px]"
-                                src="/assets/priceIcon.svg" />
-                            <div
-                                class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold"
-                                v-if="businessData.pricerange == 3">
-                                $100 to $1000
-                            </div>
-                            <div
-                                class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold"
-                                v-if="businessData.pricerange == 2">
-                                $10 to $100
-                            </div>
-                            <div
-                                class="pl-4 text-gray-900 dark:text-white transition duration-500 ease font-semibold"
-                                v-if="businessData.pricerange == 1">
-                                $0 to $10
-                            </div>
+                        <!-- Menu -->
+                        <div class="border-b pb-4">
+                            <button
+                                id="filterBtn"
+                                @click="showMenu"
+                                class="bg-blue-700 mt-5 mr-7 md:mr-0 flex flex-col items-center h-full">
+                                Order now
+                            </button>
                         </div>
+                        <MenuModal
+                            @close="closeMenu"
+                            @menu-push="menuData"
+                            v-if="menuVisible"></MenuModal>
                         <!-- Ratings -->
                         <div
                             v-if="businessData.ratings !== undefined"
@@ -322,8 +380,35 @@ export default defineComponent({
                             </div>
                         </div>
                         <!-- Reviews -->
-                        <div class="flex text-left flex-col pt-4 pb-4">
-                            <div v-if="businessData.ratings !== undefined">
+                        <div class="flex text-left flex-col pt-4 pb-4 text-black">
+                            <div v-if="facebookReview !== null">
+                                <h1
+                                    class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
+                                    Reviews from Facebook ({{
+                                        Object.keys(facebookReview)
+                                            .length
+                                    }})
+                                </h1>
+                                <div v-for="idx in facebookReview" class="w-full p-5 mb-5 border rounded-2xl">
+                                    <div class="flex items-center">
+                                        <!-- <div class="flex items-center">
+                                            <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ idx['recommendation_type'] }}</div>
+                                        </div> -->
+                                        <img class="w-10 h-10 pr-3" src="/assets/profileIcon.svg"/>
+                                        <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ idx['review_text'] }}</div>
+                                    </div>
+                                    <div class="flex items-center">
+                                            <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ convertDate(idx['created_time']) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <h1
+                                    class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
+                                    No Reviews (yet)
+                                </h1>
+                            </div>
+                            <!-- <div v-if="businessData.ratings !== undefined">
                                 <h1
                                     class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
                                     Reviews ({{
@@ -339,7 +424,7 @@ export default defineComponent({
                                     class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
                                     No Reviews (yet)
                                 </h1>
-                            </div>
+                            </div> -->
 
                             <div class="relative overflow-hidden mt-5">
                                 <div
@@ -485,3 +570,5 @@ export default defineComponent({
     font-weight: 700;
 }
 </style>
+
+
