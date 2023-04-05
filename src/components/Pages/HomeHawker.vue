@@ -71,14 +71,22 @@ export default {
                 console.error(error)
             }
         },
-        showOrder: function (item) {
+        showOrderForUpcoming: function (item) {
             if(item['status'] == 'open'){
                 return true
             }
             else {
                 return false
             }
-        }
+        },
+        showOrderForCompleted: function (item) {
+            if(item['status'] == 'open'){
+                return false
+            }
+            else {
+                return true
+            }
+        },
         // rejectOrder: async function(orderid): Promise<void> {
         //     try {
         //         const data = {
@@ -157,7 +165,7 @@ export default {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in orders" v-show="showOrder(item)">
+                                <tr v-for="item in orders" v-show="showOrderForUpcoming(item)">
                                     <td>{{ item['customer_name'] }}</td>
                                     <td>{{ item['orderID'] }}</td>
                                     <td>
@@ -177,48 +185,40 @@ export default {
                                         </div>
                                     </td>
                                 </tr>
-                                <!-- <div v-for="item in orders">
-                                    <tr v-if="item['status'] == 'open'">
-                                        <td>{{ item['customer_name'] }}</td>
-                                        <td>{{ item['orderID'] }}</td>
-                                        <td>
-                                            <ol>
-                                                <li v-for="food in item['order_items']">
-                                                    {{ food['item_name'] }} ({{ food['quantity'] }})
-                                                </li>
-                                            </ol>
-                                        </td>
-                                        <td>{{ item['phone_no'] }}</td>
-                                        <td>${{ item['total_price'] }}</td>
-                                        <td>
-                                            <div class="p-3">
-                                                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-5 rounded">Confirm</button>
-                                                <button @click=" rejectOrder()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-5 rounded">Reject</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </div> -->
                             </tbody>
                         </table>
-                        <!-- <div v-for="item in orders">
-                            <div>Customer name: {{ item['customer_name'] }}</div>
-                            <div>OrderID: {{ item['orderID'] }}</div>
-                            <div v-for="food in item['order_items']">
-                                    <div>ItemID: {{ food['itemID'] }}</div>
-                                    <div>Item name: {{ food['item_name'] }}</div>
-                                    <div>Quantity: {{ food['quantity'] }}</div>
-                            </div>
-                            <div>Phone number: {{ item['phone_no'] }}</div>
-                            <div>Total price: ${{ item['total_price'] }}</div>
-                            <br>
-                        </div> -->
                     </div>
                 </div>
                 <div v-show="isCompletedVisible">
                     <div>
-                        <p>Test 4</p>
-                        <p>Test 5</p>
-                        <p>Test 6</p>
+                        <table class="table-fixed mx-auto">
+                            <thead>
+                                <tr>
+                                    <th class="p-4">Customer name</th>
+                                    <th class="p-4">OrderID</th>
+                                    <th class="p-4">Item information (Qty)</th>
+                                    <th class="p-4">Phone number</th>
+                                    <th class="p-4">Total price</th>
+                                    <th class="p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in orders" v-show="showOrderForCompleted(item)">
+                                    <td>{{ item['customer_name'] }}</td>
+                                    <td>{{ item['orderID'] }}</td>
+                                    <td>
+                                        <ol>
+                                            <li v-for="food in item['order_items']">
+                                                {{ food['item_name'] }} ({{ food['quantity'] }})
+                                            </li>
+                                        </ol>
+                                    </td>
+                                    <td>{{ item['phone_no'] }}</td>
+                                    <td>${{ item['total_price'] }}</td>
+                                    <td>{{ item['status'] }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
