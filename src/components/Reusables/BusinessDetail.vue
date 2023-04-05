@@ -52,7 +52,8 @@ export default defineComponent({
             error: false,
             menuData: null as Business[] | null,
             menuVisible: false as boolean,
-            facebookReview: null
+            facebookReview: null,
+            dbReview: null
         }
     },
     beforeMount() {
@@ -60,7 +61,7 @@ export default defineComponent({
         axios.get('https://unpkg.com/axios/dist/axios.min.js')
         axios.get('https://js.stripe.com/v2/')
         this.fetchFacebookReview()
-        console.log(this.businessData)
+        this.fetchReviewDb()
     },
     mounted() {
         const { search } = window.location
@@ -86,8 +87,16 @@ export default defineComponent({
         },
         fetchFacebookReview: async function(): Promise<void> {
             try {
-                const response = await axios.get('http://localhost:5005/review/117623211277081')
+                const response = await axios.get('http://localhost:5004/review/117623211277081')
                 this.facebookReview = response.data.data
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        fetchReviewDb: async function(): Promise<void> {
+            try {
+                const response = await axios.get('http://localhost:5004/getreview/0')
+                this.dbReview = response.data.data.reviews
             } catch (error) {
                 console.error(error)
             }
@@ -157,19 +166,16 @@ export default defineComponent({
                 this.error = true
             } else {
                 this.error = false
-                const user = firebase.auth().currentUser
-                user.getIdToken()
-                    .then((token) => {
-                        firebaseService.updateRating(
-                        this.business_id - 1,
-                        user.uid,
-                        user.displayName,
-                        this.final_value + 1,
-                        this.final_review,
-                        Date.now(),
-                        token
-                        )
-                    })
+                try {
+                    const data = {
+                        "hawkerID": "0",
+                        "review": this.final_review,
+                    }
+                    axios.post('http://localhost:5004/postreview',data)
+                }
+                catch (error) {
+                    console.error(error)
+                }
             }
         },
         showMenu(): void {
@@ -408,6 +414,33 @@ export default defineComponent({
                                     No Reviews (yet)
                                 </h1>
                             </div>
+                            <div v-if="dbReview !== null">
+                                <h1
+                                    class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
+                                    More reviews ({{
+                                        Object.keys(dbReview)
+                                            .length
+                                    }})
+                                </h1>
+                                <div v-for="idx in dbReview" class="w-full p-5 mb-5 border rounded-2xl">
+                                    <div class="flex items-center">
+                                        <!-- <div class="flex items-center">
+                                            <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ idx['recommendation_type'] }}</div>
+                                        </div> -->
+                                        <img class="w-10 h-10 pr-3" src="/assets/profileIcon.svg"/>
+                                        <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ idx['review'] }}</div>
+                                    </div>
+                                    <div class="flex items-center">
+                                            <div class="text-gray-700 dark:text-white transition duration-500 ease font-semibold">{{ convertDate(idx['timestamp']) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <h1
+                                    class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
+                                    No Reviews (yet)
+                                </h1>
+                            </div>
                             <!-- <div v-if="businessData.ratings !== undefined">
                                 <h1
                                     class="text-gray-900 dark:text-white transition duration-500 ease text-2xl font-semibold pb-4">
@@ -443,33 +476,6 @@ export default defineComponent({
                                             v-else>
                                             Leave your review now!
                                         </h3>
-                                        <div class="flex items-center">
-                                            <div class="flex items-center">
-                                                <div
-                                                    v-for="rating in user_rating"
-                                                    class="star-rating">
-                                                    <button
-                                                        v-on:click="set(rating)"
-                                                        v-on:mouseover="
-                                                            star_over(rating)
-                                                        "
-                                                        v-on:mouseout="star_out"
-                                                        :value="rating"
-                                                        class="px-2 py-4 hover:border-transparent focus-visible:outline-none focus:outline-none bg-transparent cursor-pointer">
-                                                        <img
-                                                            v-if="
-                                                                disabled[rating]
-                                                            "
-                                                            class="w-10 h-10"
-                                                            :src="star_false" />
-                                                        <img
-                                                            v-else
-                                                            class="w-10 h-10"
-                                                            :src="star_true" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div
                                             class="w-full flex flex-col items-end">
                                             <label

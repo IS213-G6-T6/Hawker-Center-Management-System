@@ -125,23 +125,23 @@ export default defineComponent({
 
             const data = {
                 "customerID": "11",
-                "customer_name": "q",
-                "hawkerID":"1",
+                "customer_name": "John",
+                "hawkerID":"0",
                 "order_items": [
                     {
-                        "item_name": "rice",
-                        "itemID": 9,
-                        "quantity": 100
+                        "item_name": "Hokkien Mee",
+                        "itemID": 1,
+                        "quantity": 1
                     },
                     {
-                        "item_name": "fish",
-                        "itemID": 10,
-                        "quantity": 200
+                        "item_name": "Hokkien Mee w/ Roasted Pork",
+                        "itemID": 2,
+                        "quantity": 1
                     }
                 ],
                 "phone_no": "9420000",
                 "status": "open",
-                "total_price": "100.00",
+                "total_price": "8.5",
             };
 
             // const data = {
@@ -151,7 +151,7 @@ export default defineComponent({
             //     "quantity": 2
             // };
 
-            axios.post('http://localhost:5100/placeOrder', data)
+            axios.post('http://localhost:8000/placeOrder', data)
                 .then(response => {
                     // console.log("axios post success")
                     // console.log("Response data",response.data)
