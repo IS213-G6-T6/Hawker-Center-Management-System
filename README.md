@@ -51,7 +51,7 @@ npm run dev
 ```
 ## Getting Started with backend
 
-This repository contains code for all the microservices that utilizes Docker containers and all the database scripts required. The application requires a WAMP database server to be running and all database scripts to be imported before the Docker container can be deployed.
+This repository contains code for all the microservices that utilizes Docker containers and all the database scripts required. The application requires a WAMP database server to be running and all database scripts to be imported before the Docker container can be deployed. For the WAMP database, ensure that it is version 8 and above. You must also make sure there is a "IS213" username account with no password.
 
 Installation
 1. Clone this repository onto your local machine.
