@@ -67,5 +67,13 @@ docker-compose up
 
 6. Wait for the Docker container to deploy.
 
+Making Kong work
+docker run --rm -d --name=getorder --network=kong_kong-net -e dbURL=mysql+mysqlconnector://is213@host.docker.internal:3306/orderdb <dockerID>/order:project
+docker run --rm -d --name=rejectorder --network=kong_kong-net <dockerID>/rejectorder:compose
+docker run --rm -d --name=createorder --network=kong_kong-net <dockerID>/placeorder:compose
+docker run --rm -d --name=review --network=kong_kong-net <dockerID>/review:project
+docker run --rm -d --name=rejectorder2 --network=kong_kong-net <dockerID>/rejectorder:compose
+
+NOTE: Ensure that Kong is running by entering the Kong folder and running docker-compose up
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
